@@ -1,0 +1,49 @@
+name: bedrock
+framework:
+  type: python
+  start-file: wsgi/playdoh.wsgi
+env:
+  DJANGO_SETTINGS_MODULE: bedrock.settings
+  # these random words are very short. change env vars manually for production
+  DJANGO_SECRET_KEY: ${random-word}
+  DJANGO_HMAC_KEY: ${random-word}
+  DJANGO_SERVE_STATIC: true
+  DJANGO_DEBUG: true
+  SITE_URL: 'https://bedrock.paas.allizom.org'
+  LESSC_BIN: '/usr/bin/lessc'
+requirements:
+  pypm:
+    # These should be kept in sync with requirements/compiled.txt
+    - MySQL-python==1.2.3
+    - jinja2==2.5.5
+    - py-bcrypt==0.3
+#  ubuntu:
+#    - node-less
+min_version:
+  client: 1.4.5
+services:
+  ${name}-db: mysql
+  ${name}-memcache: memcached
+  media: filesystem
+hooks:
+  post-staging:
+    - python manage.py syncdb --noinput
+#    - python manage.py compress_assets  # doing this locally for now
+    - python manage.py update_product_details
+#    - python manage.py migrate authtoken --noinput
+#    - python manage.py migrate rna --noinput
+#    - python manage.py collectstatic --noinput
+processes:
+    web: $STACKATO_UWSGI --static-map /media=$HOME/media
+ignores:
+  - ".git"
+  - "*.pyc"
+  - "*.pyo"
+  - "*.swp"
+  - "*.un~"
+  - "*.orig"
+  - "*.sublime*"
+  - ".coverage*"
+  - "_coverage/*"
+  - ".noseids"
+  - "*settings/local.py"

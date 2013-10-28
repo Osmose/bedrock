@@ -7,9 +7,7 @@ from .base import *  # noqa
 try:
     from .local import *  # noqa
 except ImportError as exc:
-    exc.args = tuple(['%s (did you rename bedrock/settings/local.py-dist?)' %
-                      exc.args[0]])
-    raise exc
+    pass  # not needed for paas
 
 
 if DEV:

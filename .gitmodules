@@ -19,3 +19,6 @@
 [submodule "vendor-local/src/django-waffle"]
 	path = vendor-local/src/django-waffle
 	url = https://github.com/jsocol/django-waffle.git
+[submodule "vendor-local/src/dj-database-url"]
+	path = vendor-local/src/dj-database-url
+	url = https://github.com/kennethreitz/dj-database-url.git

@@ -6,15 +6,25 @@
 
 from django.utils.functional import lazy
 
+import dj_database_url
 from funfactory.settings_base import *  # noqa
 
 # Production uses MySQL, but Sqlite should be sufficient for local development.
 # Our CI server tests against MySQL.
 DATABASES = {
-    'default': {
+    'default': dj_database_url.config() or {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'bedrock.db',
     }
+}
+
+DEBUG = os.environ.get('DJANGO_DEBUG', False)
+SITE_URL = os.environ.get('SITE_URL', 'http://localhost:8000')
+
+RNA = {
+    'BASE_URL': os.environ.get(
+        'RNA_BASE_URL', 'https://nucleus.paas.allizom.org/rna/'),
+    'LEGACY_API': os.environ.get('RNA_LEGACY_API', False)
 }
 
 # Override in local.py for memcached.
@@ -69,7 +79,7 @@ ALLOWED_HOSTS = [
 CANONICAL_URL = 'http://www.mozilla.org'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'ssssshhhhh'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ssssshhhhh')
 
 TEMPLATE_DIRS = (
     path('locale'),
@@ -648,8 +658,8 @@ DOMAIN_METHODS = {
 
 # Dynamically process LESS server-side? (usually true to local
 # development)
-LESS_PREPROCESS = False
-LESS_BIN = 'lessc'
+LESS_PREPROCESS = os.environ.get('LESS_PREPROCESS', False)
+LESS_BIN = os.environ.get('LESSC_BIN', 'lessc')
 
 MIDDLEWARE_CLASSES = (
     'bedrock.mozorg.middleware.MozorgRequestTimingMiddleware',
@@ -731,7 +741,7 @@ TEMPLATE_CONTEXT_PROCESSORS = get_template_context_processors(append=(
 ## Auth
 PWD_ALGORITHM = 'bcrypt'
 HMAC_KEYS = {
-    #'2011-01-01': 'cheesecake',
+    '2013-09-24': os.environ.get('DJANGO_HMAC_KEY', '')
 }
 
 FEEDS = {

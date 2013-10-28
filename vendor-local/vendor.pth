@@ -1,5 +1,6 @@
 src/basket-client
 src/feedparser/feedparser
+src/dj-database-url
 src/django-recaptcha
 src/django-dnt
 src/django-statsd
